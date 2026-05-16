@@ -14,12 +14,8 @@
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
 
-    "build": "cd server && npm run build && cd ../client && npm run build && mkdir -p ../server/dist/public && cp -rv dist/* ../server/dist/public/",
+    "build": "cd server && npm run build && cd ../client && npm run build",
 
-    "start": "node server/dist/index.js",
-
-    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
-
-    "build:all": "npm run build"
+    "start": "node server/dist/index.js"
   }
 }

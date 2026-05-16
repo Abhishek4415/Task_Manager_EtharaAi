@@ -5,11 +5,13 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
+
   server: {
     port: 5173,
     proxy: {
@@ -19,8 +21,9 @@ export default defineConfig({
       },
     },
   },
+
   build: {
-    outDir: 'dist',
+    outDir: '../server/dist/public',
     emptyOutDir: true,
   },
 });
