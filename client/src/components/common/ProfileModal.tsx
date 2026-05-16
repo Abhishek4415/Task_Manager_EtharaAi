@@ -43,7 +43,7 @@ export default function ProfileModal({ member, isOpen, onClose }: ProfileModalPr
 
   if (!member || !editForm) return null;
 
-  const isSelf = currentUser?.id === member._id;
+  const isSelf = currentUser?._id === member._id;
 
   return createPortal(
     <AnimatePresence>
