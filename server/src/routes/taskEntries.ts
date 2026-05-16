@@ -198,7 +198,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<v
 // GET /api/task-entries/:id/logs
 router.get('/:id/logs', authenticate, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const logs = await TaskEntryLog.find({ entryId: req.params.id })
+    const logs = await TaskEntryLog.find({ entryId: req.params.id as string })
       .populate('userId', 'fullName')
       .sort({ createdAt: -1 })
       .lean();

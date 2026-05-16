@@ -139,7 +139,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<v
 // GET /api/todo-sessions/:id
 router.get('/:id', authenticate, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const session = await TodoSession.findById(req.params.id)
+    const session = await TodoSession.findById(req.params.id as string)
       .populate('projectId', 'name taskType dailyTarget')
       .populate('createdById', 'fullName email')
       .lean();
@@ -147,7 +147,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res: Response): Promis
       res.status(404).json({ success: false, data: null, message: 'Session not found' });
       return;
     }
-    const entries = await TaskEntry.find({ todoSessionId: req.params.id })
+    const entries = await TaskEntry.find({ todoSessionId: req.params.id as string })
       .populate('assigneeId', 'fullName email jobTitle')
       .lean();
     res.json({ success: true, data: { ...session, entries }, message: 'OK' });
@@ -161,7 +161,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res: Response): Promis
 router.put('/:id', authenticate, requirePL, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const session = await TodoSession.findOneAndUpdate(
-      { _id: req.params.id, createdById: new mongoose.Types.ObjectId(req.user!.id) },
+      { _id: req.params.id as string, createdById: new mongoose.Types.ObjectId(req.user!.id) },
       { $set: req.body },
       { new: true }
     );
@@ -180,14 +180,14 @@ router.put('/:id', authenticate, requirePL, async (req: AuthRequest, res: Respon
 router.delete('/:id', authenticate, requirePL, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const session = await TodoSession.findOneAndDelete({
-      _id: req.params.id,
+      _id: req.params.id as string,
       createdById: new mongoose.Types.ObjectId(req.user!.id),
     });
     if (!session) {
       res.status(404).json({ success: false, data: null, message: 'Session not found' });
       return;
     }
-    await TaskEntry.deleteMany({ todoSessionId: req.params.id });
+    await TaskEntry.deleteMany({ todoSessionId: req.params.id as string });
     res.json({ success: true, data: null, message: 'Session deleted' });
   } catch (err) {
     console.error(err);
@@ -212,7 +212,7 @@ router.post(
       const rows = XLSX.utils.sheet_to_json(sheet);
 
       const session = await TodoSession.findOneAndUpdate(
-        { _id: req.params.id, createdById: new mongoose.Types.ObjectId(req.user!.id) },
+        { _id: req.params.id as string, createdById: new mongoose.Types.ObjectId(req.user!.id) },
         { $set: { stemFileData: rows, totalAssigned: rows.length } },
         { new: true }
       );
@@ -222,7 +222,7 @@ router.post(
       }
 
       // Update TaskEntries with per-row data
-      const entries = await TaskEntry.find({ todoSessionId: req.params.id });
+      const entries = await TaskEntry.find({ todoSessionId: req.params.id as string });
       const updateOps = entries.flatMap((entry) =>
         rows.map((row, idx) => ({
           updateOne: {
@@ -245,7 +245,7 @@ router.post(
 // GET /api/todo-sessions/:id/progress
 router.get('/:id/progress', authenticate, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const entries = await TaskEntry.find({ todoSessionId: req.params.id })
+    const entries = await TaskEntry.find({ todoSessionId: req.params.id as string })
       .populate('assigneeId', 'fullName email jobTitle')
       .lean();
 

@@ -32,7 +32,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<v
 // GET /api/projects/by-pl/:plId (protected)
 router.get('/by-pl/:plId', authenticate, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { plId } = req.params;
+    const plId = req.params.plId as string;
     if (!mongoose.isValidObjectId(plId)) {
       res.status(400).json({ success: false, data: null, message: 'Invalid plId' });
       return;
@@ -80,7 +80,7 @@ router.post(
 router.get('/:id', authenticate, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const plId = getPlId(req);
-    const project = await Project.findOne({ _id: req.params.id, projectLeadId: plId })
+    const project = await Project.findOne({ _id: req.params.id as string, projectLeadId: plId })
       .populate('projectLeadId', 'fullName email')
       .lean();
     if (!project) {
@@ -98,7 +98,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res: Response): Promis
 router.put('/:id', authenticate, requirePL, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const project = await Project.findOneAndUpdate(
-      { _id: req.params.id, projectLeadId: new mongoose.Types.ObjectId(req.user!.id) },
+      { _id: req.params.id as string, projectLeadId: new mongoose.Types.ObjectId(req.user!.id) },
       { $set: req.body },
       { new: true }
     );
@@ -117,7 +117,7 @@ router.put('/:id', authenticate, requirePL, async (req: AuthRequest, res: Respon
 router.delete('/:id', authenticate, requirePL, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const project = await Project.findOne({
-      _id: req.params.id,
+      _id: req.params.id as string,
       projectLeadId: new mongoose.Types.ObjectId(req.user!.id),
     });
     if (!project) {
