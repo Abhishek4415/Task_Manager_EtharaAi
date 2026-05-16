@@ -9,7 +9,7 @@
   "scripts": {
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
-    "build:all": "cd client && npm run build && cd ../server && npm run build",
+    "build:all": "cd client && npm run build && cd ../server && npm run build && mkdir -p dist/public && cp -rv ../client/dist/* dist/public/",
     "install:all": "npm install && cd client && npm install && cd ../server && npm install"
   }
 }
