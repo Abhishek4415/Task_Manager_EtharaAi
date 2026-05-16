@@ -1,0 +1,12 @@
+{
+  "name": "task-track",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["client", "server", "shared"],
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build:all": "cd client && npm run build && cd ../server && npm run build",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install"
+  }
+}
